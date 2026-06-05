@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LightWork AI - Onboarding Command Centre</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:#f8fafc;color:#0f172a;font-size:14px;line-height:1.5}
+.app{min-height:100vh;display:flex;flex-direction:column}
+.topbar{background:#fff;border-bottom:1px solid #e2e8f0;padding:0 24px;display:flex;align-items:center;gap:16px;height:52px;position:sticky;top:0;z-index:100}
+.logo{font-size:15px;font-weight:600;display:flex;align-items:center;gap:8px}
+.logo-badge{background:#0f172a;color:#f8fafc;font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px;letter-spacing:0.5px}
+.nav{display:flex;gap:4px;margin-left:auto}
+.nav-btn{background:none;border:none;padding:6px 16px;border-radius:6px;font-size:13px;font-weight:500;cursor:pointer;color:#64748b;transition:all 0.15s}
+.nav-btn:hover{background:#f1f5f9;color:#0f172a}
+.nav-btn.active{background:#f1f5f9;color:#0f172a;font-weight:600}
+.main{flex:1;padding:24px;max-width:1200px;margin:0 auto;width:100%}
+.section{display:none}.section.active{display:block}
+.briefing{background:#0f172a;border-radius:12px;padding:20px 24px;margin-bottom:20px;color:#f1f5f9}
+.briefing-label{font-size:11px;font-weight:600;letter-spacing:1px;color:#94a3b8;margin-bottom:8px;text-transform:uppercase}
+.briefing-title{font-size:16px;font-weight:600;margin-bottom:12px;color:#f1f5f9}
+.briefing-list{display:flex;flex-direction:column;gap:8px}
+.briefing-row{display:flex;align-items:flex-start;gap:10px;font-size:13px;line-height:1.5;color:#cbd5e1}
+.bdot{width:7px;height:7px;border-radius:50%;margin-top:5px;flex-shrink:0}
+.bdot-red{background:#ef4444}.bdot-amber{background:#f59e0b}.bdot-green{background:#22c55e}
+.metrics{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:20px}
+.mcard{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px}
+.mlabel{font-size:11px;color:#64748b;margin-bottom:5px;font-weight:500}
+.mvalue{font-size:22px;font-weight:700;letter-spacing:-0.5px}
+.stitle{font-size:14px;font-weight:600;margin-bottom:12px;color:#0f172a}
+.ptable{background:#fff;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;margin-bottom:20px}
+.crow{padding:11px 16px;border-bottom:1px solid #e2e8f0;display:grid;grid-template-columns:175px 125px 120px 105px 80px 100px 80px 80px;align-items:center;gap:10px;cursor:default;transition:background 0.1s}
+.crow:last-child{border-bottom:none}
+.crow:hover{background:#f8fafc}
+.crow.hdr{background:#f8fafc;cursor:default;font-size:11px;font-weight:600;color:#64748b;letter-spacing:0.3px}
+.crow.hdr:hover{background:#f8fafc}
+.cname{font-weight:600;font-size:13px;color:#0f172a}
+.csub{font-size:11px;color:#94a3b8;margin-top:1px}
+.badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
+.bg{background:#dcfce7;color:#166534}
+.ba{background:#fef3c7;color:#92400e}
+.br{background:#fee2e2;color:#991b1b}
+.bb{background:#dbeafe;color:#1e40af}
+.bgr{background:#f1f5f9;color:#64748b}
+.bp{background:#f3e8ff;color:#6b21a8}
+.sbar{background:#e2e8f0;border-radius:20px;height:6px;overflow:hidden;width:68px}
+.sfill{height:100%;border-radius:20px}
+.fcard{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px 24px;margin-bottom:14px}
+.ftitle{font-size:13px;font-weight:600;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid #e2e8f0}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.fg{display:flex;flex-direction:column;gap:5px}
+.fg.full{grid-column:1/-1}
+.flabel{font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.4px}
+.finput{border:1px solid #cbd5e1;border-radius:7px;padding:8px 11px;font-size:13px;background:#fff;color:#0f172a;outline:none;font-family:inherit;width:100%}
+.finput:focus{border-color:#64748b}
+textarea.finput{resize:vertical;min-height:90px}
+.sgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.sitem{background:#f8fafc;border-radius:8px;padding:10px 12px}
+.sname{font-size:11px;font-weight:600;color:#64748b;margin-bottom:6px}
+.sbtn{background:#0f172a;color:#fff;border:none;padding:11px 26px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer}
+.sbtn:hover{background:#1e293b}
+.c360hdr{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px 24px;margin-bottom:14px;display:flex;align-items:center;gap:20px}
+.avatar{width:52px;height:52px;border-radius:12px;background:#0f172a;color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700;flex-shrink:0}
+.c360name{font-size:17px;font-weight:700;color:#0f172a}
+.c360sub{font-size:13px;color:#64748b;margin-top:2px}
+.c360tags{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.c360stats{display:flex;gap:24px;margin-left:auto}
+.cstat{text-align:center}
+.cstatv{font-size:20px;font-weight:700;color:#0f172a}
+.cstatl{font-size:11px;color:#64748b;margin-top:1px}
+.twocol{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.icard{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:16px 20px}
+.icardtitle{font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px}
+.tline{display:flex;flex-direction:column}
+.tlrow{display:flex;gap:12px;padding-bottom:10px;position:relative}
+.tldot{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0;margin-top:1px;z-index:1;font-weight:700}
+.tl-done{background:#dcfce7;color:#166534}
+.tl-active{background:#dbeafe;color:#1e40af}
+.tl-stalled{background:#fef3c7;color:#92400e}
+.tl-blocked{background:#fee2e2;color:#991b1b}
+.tl-pending{background:#f1f5f9;color:#94a3b8}
+.tlline{position:absolute;left:9px;top:22px;bottom:0;width:1px;background:#e2e8f0}
+.tlrow:last-child .tlline{display:none}
+.tlcontent{flex:1}
+.tlstage{font-size:13px;color:#0f172a}
+.tlstatus{font-size:11px;color:#94a3b8;margin-top:1px}
+.riskrow{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid #e2e8f0}
+.riskrow:last-child{border-bottom:none}
+.riskicon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+.risk-h{background:#fee2e2;color:#991b1b}
+.risk-m{background:#fef3c7;color:#92400e}
+.risk-l{background:#f3e8ff;color:#6b21a8}
+.actrow{padding:10px 0;border-bottom:1px solid #e2e8f0;display:grid;grid-template-columns:1fr 80px 70px 100px;gap:10px;align-items:start}
+.actrow:last-child{border-bottom:none}
+.actowner{font-size:11px;font-weight:600;color:#1e40af;background:#dbeafe;padding:2px 7px;border-radius:4px;text-align:center;display:inline-block}
+.emailblock{background:#f8fafc;border-radius:8px;padding:16px 20px;font-size:13px;line-height:1.8;white-space:pre-wrap;font-family:'DM Mono',monospace;border:1px solid #e2e8f0;color:#0f172a}
+.escblock{background:#0f172a;border-radius:8px;padding:16px 20px;font-size:12px;line-height:1.9;font-family:'DM Mono',monospace;color:#e2e8f0;white-space:pre-wrap}
+.ekey{color:#64748b}
+.eval{color:#f1f5f9}
+.edanger{color:#fca5a5;font-weight:600}
+.hwarn{background:#fef2f2;border:2px solid #fecaca;border-radius:10px;padding:14px 18px;margin-bottom:14px;display:flex;gap:12px}
+.hwtitle{font-size:13px;font-weight:700;color:#991b1b;margin-bottom:4px}
+.hwtext{font-size:12px;color:#b91c1c;line-height:1.6}
+.tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.tbtn{background:none;border:1px solid #e2e8f0;padding:6px 14px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;color:#64748b;transition:all 0.15s;font-family:'DM Sans',sans-serif}
+.tbtn:hover{background:#f8fafc}
+.tbtn.active{background:#fff;color:#0f172a;border-color:#94a3b8;font-weight:600}
+.csig{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid #e2e8f0;font-size:12px;line-height:1.5}
+.csig:last-child{border-bottom:none}
+.stag{font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;white-space:nowrap;flex-shrink:0;margin-top:1px}
+.tag-delay{background:#fef3c7;color:#92400e}
+.tag-frustration{background:#fee2e2;color:#991b1b}
+.tag-escalation{background:#fce7f3;color:#9d174d}
+.tag-churn{background:#ede9fe;color:#5b21b6}
+.tag-stakeholder{background:#fef3c7;color:#92400e}
+.tag-positive{background:#dcfce7;color:#166534}
+.tag-readiness{background:#dbeafe;color:#1e40af}
+.tag-blocker{background:#fee2e2;color:#991b1b}
+.hint{text-align:center;padding:60px 20px;color:#94a3b8}
+.ibanner{background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:10px;font-size:12px;color:#991b1b;font-weight:500;margin-bottom:12px}
+.dtrow{padding:5px 0}
+.dtkey{color:#64748b;font-size:12px;display:inline-block;width:130px}
+.dtval{font-size:12px;color:#0f172a;font-weight:500}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="logo">
+      <span class="logo-badge">LW</span>
+      LightWork AI
+      <span style="color:#94a3b8;font-weight:400;font-size:13px;margin-left:4px">/ Onboarding Command Centre</span>
+    </div>
+    <div class="nav">
+      <button class="nav-btn active" onclick="showSection('dashboard')">Portfolio</button>
+      <button class="nav-btn" onclick="showSection('add');clearForm()">Add Client</button>
+      <button class="nav-btn" onclick="showSection('c360')">Customer 360</button>
+    </div>
+  </div>
+  <div class="main">
+    <div class="section active" id="section-dashboard">
+      <div class="briefing" id="briefingPanel"></div>
+      <div class="metrics" id="metricsGrid"></div>
+      <div class="stitle">Priority Queue</div>
+      <div class="ptable">
+        <div class="crow hdr">
+          <div>Customer</div><div>Stage</div><div>Status</div><div>Readiness</div><div>Priority</div><div>Sentiment</div><div>Go-Live</div><div>Action</div>
+        </div>
+        <div id="clientRows"></div>
+      </div>
+    </div>
+    <div class="section" id="section-add">
+      <div class="fcard">
+        <div class="ftitle" id="formTitle">Add New Client</div>
+        <div class="fgrid">
+          <div class="fg"><label class="flabel">Customer Name</label><input class="finput" id="f_name" placeholder="e.g. Maple and Co Property Group"></div>
+          <div class="fg"><label class="flabel">Segment</label><select class="finput" id="f_segment"><option>Enterprise</option><option>Mid-Market</option><option>SMB</option><option>Strategic</option></select></div>
+          <div class="fg"><label class="flabel">ARR / Contract Value (GBP)</label><input class="finput" id="f_arr" type="number" placeholder="85000"></div>
+          <div class="fg"><label class="flabel">Contract Signed Date</label><input class="finput" id="f_signed" type="date"></div>
+          <div class="fg"><label class="flabel">Target Go-Live Date</label><input class="finput" id="f_golive" type="date"></div>
+          <div class="fg"><label class="flabel">Assigned CSM</label><input class="finput" id="f_csm" placeholder="e.g. Priya Sharma"></div>
+          <div class="fg"><label class="flabel">Implementation Owner</label><input class="finput" id="f_impl" placeholder="e.g. Tom Okafor"></div>
+          <div class="fg"><label class="flabel">Current Stage</label><select class="finput" id="f_stage"><option>Contract Signed</option><option>Introduction Email Sent</option><option>Kickoff Call</option><option>Platform Configuration</option><option>Data Migration</option><option>API Integration</option><option>Pre-Go-Live Review</option><option>Go-Live</option><option>Hypercare</option></select></div>
+          <div class="fg"><label class="flabel">Client Sentiment</label><select class="finput" id="f_sentiment"><option>Positive</option><option>Neutral</option><option>Concerned</option><option>Frustrated</option></select></div>
+          <div class="fg"><label class="flabel">Integration Type</label><select class="finput" id="f_integration"><option>REST API</option><option>Webhook</option><option>CSV Import</option><option>Direct DB</option><option>None</option></select></div>
+          <div class="fg"><label class="flabel">Data Migration Status</label><select class="finput" id="f_migration"><option>Not Started</option><option>In Progress</option><option>Stalled</option><option>Completed</option><option>Blocked</option></select></div>
+          <div class="fg"><label class="flabel">API Integration Status</label><select class="finput" id="f_api"><option>Not Started</option><option>In Progress</option><option>Stalled</option><option>Completed</option><option>Blocked</option></select></div>
+          <div class="fg"><label class="flabel">Training Completion (%)</label><input class="finput" id="f_training" type="number" min="0" max="100" placeholder="65"></div>
+          <div class="fg"><label class="flabel">Open Blockers</label><input class="finput" id="f_blockers" type="number" min="0" placeholder="2"></div>
+        </div>
+      </div>
+      <div class="fcard">
+        <div class="ftitle">Stage-by-Stage Status</div>
+        <div class="sgrid" id="stageGrid"></div>
+      </div>
+      <div class="fcard">
+        <div class="ftitle">Communications and Notes</div>
+        <div class="fgrid">
+          <div class="fg full"><label class="flabel">Recent Customer Communication (paste emails, Slack messages, call notes)</label><textarea class="finput" id="f_comms" style="min-height:110px" placeholder="e.g. We are still waiting for our IT team to provide API credentials. We may need to postpone until next month."></textarea></div>
+          <div class="fg full"><label class="flabel">Recent Meeting Notes</label><textarea class="finput" id="f_client_notes" style="min-height:80px" placeholder="Key points from last client call..."></textarea></div>
+          <div class="fg full"><label class="flabel">Internal CS Notes</label><textarea class="finput" id="f_internal_notes" style="min-height:80px" placeholder="Internal flags and next steps..."></textarea></div>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:12px;align-items:center">
+        <span id="formMsg" style="font-size:12px;color:#64748b"></span>
+        <button class="sbtn" id="submitBtn" onclick="processForm()">Save and Generate Analysis</button>
+      </div>
+    </div>
+    <div class="section" id="section-c360">
+      <div id="c360Content"><div class="hint">Select a customer from the Portfolio to view their full profile.</div></div>
+    </div>
+  </div>
+</div>
+<script>
+var STAGES = ['Contract Signed','Introduction Email Sent','Kickoff Call','Platform Configuration','Data Migration','API Integration','Pre-Go-Live Review','Go-Live','Hypercare'];
+
+var customers = [
+  {id:1,name:'Maple and Co Property Group',segment:'Enterprise',arr:120000,signed:'2026-05-01',golive:'2026-06-25',csm:'Priya Sharma',impl:'Tom Okafor',stage:'Pre-Go-Live Review',sentiment:'Concerned',integration:'REST API',migration:'In Progress',api:'Stalled',training:58,blockers:2,comms:'We are concerned that migration may not finish before go-live. Our IT team is still reviewing the API credentials and we have not had a clear ETA from them.',client_notes:'Call 3rd June. Client anxious. IT blocker open.',internal_notes:'High-value account. Exec escalation needed if no movement by Friday.',stageStatuses:{0:'Completed',1:'Completed',2:'Completed',3:'Completed',4:'Ongoing',5:'Stalled',6:'Not Started',7:'Not Started',8:'Not Started'}},
+  {id:2,name:'Northstar Lettings',segment:'Mid-Market',arr:45000,signed:'2026-05-10',golive:'2026-06-30',csm:'James Alderton',impl:'Suki Patel',stage:'API Integration',sentiment:'Neutral',integration:'Webhook',migration:'Completed',api:'In Progress',training:80,blockers:1,comms:'Team is working through the webhook setup. Should have it done by end of week.',client_notes:'Good call 2nd June. Tech team engaged.',internal_notes:'On track. Watch the auth blocker.',stageStatuses:{0:'Completed',1:'Completed',2:'Completed',3:'Completed',4:'Completed',5:'Ongoing',6:'Not Started',7:'Not Started',8:'Not Started'}},
+  {id:3,name:'UrbanNest Management',segment:'SMB',arr:28000,signed:'2026-04-15',golive:'2026-06-15',csm:'Lena Frost',impl:'Tom Okafor',stage:'Data Migration',sentiment:'Frustrated',integration:'CSV Import',migration:'Stalled',api:'Not Started',training:35,blockers:3,comms:'We may need to postpone onboarding until next month. Our operations manager has been on leave and we have not completed training yet. The whole thing feels like it is slipping.',client_notes:'Missed last two check-ins. Hard to reach.',internal_notes:'Churn risk if go-live missed. Escalate urgently.',stageStatuses:{0:'Completed',1:'Completed',2:'Completed',3:'Completed',4:'Stalled',5:'Not Started',6:'Not Started',7:'Not Started',8:'Not Started'}},
+  {id:4,name:'Brookfield Residential',segment:'Enterprise',arr:95000,signed:'2026-05-20',golive:'2026-07-15',csm:'Priya Sharma',impl:'Suki Patel',stage:'Platform Configuration',sentiment:'Positive',integration:'REST API',migration:'Not Started',api:'Not Started',training:20,blockers:0,comms:'The platform looks great so far. Really looking forward to the full integration.',client_notes:'Kickoff excellent. Very engaged team.',internal_notes:'Healthy account. Check training ramp next week.',stageStatuses:{0:'Completed',1:'Completed',2:'Completed',3:'Ongoing',4:'Not Started',5:'Not Started',6:'Not Started',7:'Not Started',8:'Not Started'}},
+  {id:5,name:'HavenKey Properties',segment:'Mid-Market',arr:52000,signed:'2026-05-01',golive:'2026-06-05',csm:'James Alderton',impl:'Tom Okafor',stage:'Hypercare',sentiment:'Positive',integration:'REST API',migration:'Completed',api:'Completed',training:100,blockers:0,comms:'Everything is working really well. The team loves the platform.',client_notes:'Live and happy. Expansion conversation for Q3.',internal_notes:'Move to BAU. Flag for expansion.',stageStatuses:{0:'Completed',1:'Completed',2:'Completed',3:'Completed',4:'Completed',5:'Completed',6:'Completed',7:'Completed',8:'Ongoing'}},
+  {id:6,name:'PrimeBlock Estates',segment:'Strategic',arr:180000,signed:'2026-05-18',golive:'2026-06-25',csm:'Lena Frost',impl:'Suki Patel',stage:'Pre-Go-Live Review',sentiment:'Positive',integration:'Direct DB',migration:'Completed',api:'Completed',training:92,blockers:0,comms:'We completed our final UAT yesterday. Everything looks good to go.',client_notes:'Pre-go-live review passed. Sign-off received.',internal_notes:'Ready for go-live. Confirm deployment window.',stageStatuses:{0:'Completed',1:'Completed',2:'Completed',3:'Completed',4:'Completed',5:'Completed',6:'Completed',7:'Not Started',8:'Not Started'}},
+  {id:7,name:'RentBridge Living',segment:'SMB',arr:22000,signed:'2026-05-25',golive:'2026-07-10',csm:'James Alderton',impl:'Tom Okafor',stage:'Kickoff Call',sentiment:'Neutral',integration:'CSV Import',migration:'Not Started',api:'Not Started',training:0,blockers:0,comms:'We are ready to proceed with the kickoff.',client_notes:'Kickoff scheduled next Tuesday.',internal_notes:'Early stage. No concerns yet.',stageStatuses:{0:'Completed',1:'Completed',2:'Ongoing',3:'Not Started',4:'Not Started',5:'Not Started',6:'Not Started',7:'Not Started',8:'Not Started'}},
+  {id:8,name:'Atlas Property Partners',segment:'Enterprise',arr:140000,signed:'2026-04-20',golive:'2026-06-18',csm:'Priya Sharma',impl:'Suki Patel',stage:'API Integration',sentiment:'Concerned',integration:'REST API',migration:'Completed',api:'Blocked',training:60,blockers:4,comms:'Our IT team is still waiting on internal security sign-off for the API keys. No ETA yet from InfoSec. We are worried this will push our go-live date back.',client_notes:'Called 4th June. Client anxious about delay.',internal_notes:'Critical blocker. InfoSec could delay go-live 2 weeks.',stageStatuses:{0:'Completed',1:'Completed',2:'Completed',3:'Completed',4:'Completed',5:'Blocked',6:'Not Started',7:'Not Started',8:'Not Started'}}
+];
+
+function analyseComms(text) {
+  if (!text || text.trim().length < 10) return [];
+  var t = text.toLowerCase();
+  var signals = [];
+  var checks = [
+    {phrases:['postpone','delay','push back','not finish','behind schedule','running late','slipping','next month','still waiting','waiting on','no eta','timeline at risk','not on track'],tag:'Delay Signal',cls:'tag-delay',msg:'Language suggests timeline risk. The customer may be signalling that the current schedule is in jeopardy. Verify whether the go-live date needs to be formally reviewed.'},
+    {phrases:['frustrated','not happy','unhappy','disappointed','fed up','unacceptable','very concerned','losing confidence','not good enough','no one has','keep being told','been ignored','no reply','no response','still have not','chasing'],tag:'Frustration',cls:'tag-frustration',msg:'Frustration indicators detected. This customer may be losing confidence in the onboarding process. Direct CSM engagement is strongly recommended.'},
+    {phrases:['escalate','escalation','senior','director','ceo','head of','legal','contract','sla','breach','refund','compensation'],tag:'Escalation Risk',cls:'tag-escalation',msg:'Escalation language detected. The customer may be considering involving senior stakeholders or requesting contract review. Proactive executive engagement is advised.'},
+    {phrases:['cancel','cancellation','walk away','leave','exit','alternative','competitor','reconsider','review our options','re-evaluate','pull out','terminate','end the contract'],tag:'Churn Risk',cls:'tag-churn',msg:'High-risk language detected. The customer is signalling potential intent to exit or reconsider the relationship. Immediate senior CSM or leadership involvement is required.'},
+    {phrases:['on leave','out of office','unavailable','not responding','hard to reach','no show','missed the call','who to contact','not sure who','no coordinator','operations manager'],tag:'Stakeholder Gap',cls:'tag-stakeholder',msg:'Stakeholder availability issue detected. A key client-side coordinator may be absent or disengaged. Confirm who is the active point of contact.'},
+    {phrases:['api credentials','credentials not','security sign-off','infosec','awaiting approval','pending approval','missing data','files not','not provided','missing files','no access'],tag:'Dependency Blocker',cls:'tag-blocker',msg:'A specific blocker has been named in customer communications. This is likely on the critical path. Assign an owner and resolution deadline immediately.'},
+    {phrases:['excited','looking forward','happy with','pleased','great progress','going well','impressed','loving the','fantastic','excellent','on track','ahead of schedule'],tag:'Positive Momentum',cls:'tag-positive',msg:'Positive signals present. Customer appears engaged and satisfied. Maintain current cadence and look for expansion opportunities.'},
+    {phrases:['ready','completed uat','finished testing','sign-off','signed off','approved','passed review','all done','no blockers','green light','good to go'],tag:'Readiness Signal',cls:'tag-readiness',msg:'Go-live readiness signals detected. Customer may be indicating they are ready to proceed. Confirm internally and initiate the go-live checklist if not already underway.'}
+  ];
+  for (var i = 0; i < checks.length; i++) {
+    var c = checks[i];
+    for (var j = 0; j < c.phrases.length; j++) {
+      if (t.indexOf(c.phrases[j]) !== -1) {
+        signals.push({tag:c.tag, cls:c.cls, msg:c.msg});
+        break;
+      }
+    }
+  }
+  return signals;
+}
+
+function daysUntil(d) {
+  if (!d) return 999;
+  return Math.round((new Date(d) - new Date()) / 86400000);
+}
+
+
+function cloneStageStatuses(stageStatuses) {
+  var ss = {};
+  for (var i = 0; i < STAGES.length; i++) {
+    ss[i] = (stageStatuses && stageStatuses[i]) ? stageStatuses[i] : 'Not Started';
+  }
+  return ss;
+}
+
+function completeUpTo(ss, idx) {
+  for (var i = 0; i <= idx; i++) ss[i] = 'Completed';
+}
+
+function firstNonCompletedIndex(ss) {
+  for (var i = 0; i < STAGES.length; i++) {
+    if (ss[i] !== 'Completed') return i;
+  }
+  return STAGES.length;
+}
+
+function normalizeCustomerWorkflow(c) {
+  var ss = cloneStageStatuses(c.stageStatuses);
+  var selectedStageIndex = STAGES.indexOf(c.stage);
+  if (selectedStageIndex < 0) selectedStageIndex = 0;
+
+  // 1) A selected/current stage means all previous stages should already be complete.
+  completeUpTo(ss, Math.max(0, selectedStageIndex - 1));
+
+  // 2) Dependency fields should automatically update the timeline.
+  // If migration is completed, the Data Migration stage and all earlier stages are complete.
+  if (c.migration === 'Completed') completeUpTo(ss, 4);
+  if (c.migration === 'In Progress') { completeUpTo(ss, 3); if (ss[4] !== 'Completed') ss[4] = 'Ongoing'; }
+  if (c.migration === 'Stalled') { completeUpTo(ss, 3); ss[4] = 'Stalled'; }
+  if (c.migration === 'Blocked') { completeUpTo(ss, 3); ss[4] = 'Blocked'; }
+
+  // If API is completed, the API Integration stage and all earlier stages are complete.
+  // This prevents contradictions such as API Status = Completed but API stage = Ongoing.
+  if (c.api === 'Completed' || c.integration === 'None') completeUpTo(ss, 5);
+  if (c.api === 'In Progress') { completeUpTo(ss, 4); if (ss[5] !== 'Completed') ss[5] = 'Ongoing'; }
+  if (c.api === 'Stalled') { completeUpTo(ss, 4); ss[5] = 'Stalled'; }
+  if (c.api === 'Blocked') { completeUpTo(ss, 4); ss[5] = 'Blocked'; }
+
+  // 3) Respect explicit stage statuses, but keep the workflow sequential.
+  // Any completed stage implies all previous stages are complete.
+  for (var i = 0; i < STAGES.length; i++) {
+    if (ss[i] === 'Completed') completeUpTo(ss, i);
+  }
+
+  // 4) There should only be one active current stage. The first non-completed stage wins.
+  var currentIdx = firstNonCompletedIndex(ss);
+  if (currentIdx < STAGES.length) {
+    // If the current stage is simply Not Started, make it Ongoing so the timeline visibly moves forward.
+    if (ss[currentIdx] === 'Not Started') ss[currentIdx] = 'Ongoing';
+    // All later stages that are not already blocked/stalled/completed should remain Not Started.
+    for (var j = currentIdx + 1; j < STAGES.length; j++) {
+      if (ss[j] !== 'Completed' && ss[j] !== 'Blocked' && ss[j] !== 'Stalled') ss[j] = 'Not Started';
+    }
+  }
+
+  c.stageStatuses = ss;
+  c.stage = currentIdx >= STAGES.length ? 'Onboarding Complete' : STAGES[currentIdx];
+  return c;
+}
+
+function getCompletedStageCount(c) {
+  var ss = cloneStageStatuses(c.stageStatuses);
+  var count = 0;
+  for (var i = 0; i < STAGES.length; i++) if (ss[i] === 'Completed') count++;
+  return count;
+}
+
+function formatGoLive(c, short) {
+  if (!c.golive) return 'TBC';
+  if (c.stage === 'Hypercare' || c.stage === 'Onboarding Complete') return 'Live';
+  var days = daysUntil(c.golive);
+  if (days > 0) return short ? days + ' days' : 'Go-live in ' + days + ' day' + (days !== 1 ? 's' : '');
+  if (days === 0) return short ? 'Today' : 'Go-live today';
+  return short ? Math.abs(days) + 'd overdue' : 'Go-live overdue by ' + Math.abs(days) + ' day' + (Math.abs(days) !== 1 ? 's' : '');
+}
+
+function computeScore(c) {
+  var s = 0;
+  c = normalizeCustomerWorkflow(c);
+  var completedStages = getCompletedStageCount(c);
+  s += Math.round((completedStages / STAGES.length) * 35);
+  s += Math.round((parseInt(c.training) || 0) / 100 * 25);
+  var mm = {'Completed':15,'In Progress':8,'Not Started':5,'Stalled':2,'Blocked':0};
+  s += (mm[c.migration] !== undefined ? mm[c.migration] : 5);
+  s += (mm[c.api] !== undefined ? mm[c.api] : 5);
+  s -= Math.min(parseInt(c.blockers) || 0, 4) * 5;
+  var sm = {'Positive':10,'Neutral':7,'Concerned':4,'Frustrated':0};
+  s += (sm[c.sentiment] !== undefined ? sm[c.sentiment] : 7);
+  var days = daysUntil(c.golive);
+  if (days < 7 && (parseInt(c.blockers) || 0) > 0) s -= 10;
+  var sigs = analyseComms(c.comms || '');
+  var hasChurn = false, hasEsc = false, hasDelay = false, hasFrust = false;
+  for (var i = 0; i < sigs.length; i++) {
+    if (sigs[i].tag === 'Churn Risk') hasChurn = true;
+    if (sigs[i].tag === 'Escalation Risk') hasEsc = true;
+    if (sigs[i].tag === 'Delay Signal') hasDelay = true;
+    if (sigs[i].tag === 'Frustration') hasFrust = true;
+  }
+  if (hasChurn || hasEsc) s -= 12;
+  else if (hasDelay && hasFrust) s -= 8;
+  else if (hasDelay || hasFrust) s -= 4;
+  return Math.max(0, Math.min(100, Math.round(s)));
+}
+
+function computeStatus(c) {
+  var sc = computeScore(c);
+  c = normalizeCustomerWorkflow(c);
+  if (c.stage === 'Onboarding Complete') return 'Complete';
+  if (c.stage === 'Hypercare') return 'In Hypercare';
+  if (sc >= 85 && (parseInt(c.blockers)||0) === 0 && c.migration !== 'Stalled' && c.api !== 'Blocked') return 'Ready for Go-Live';
+  if (c.api === 'Blocked' || c.migration === 'Blocked' || (parseInt(c.blockers)||0) >= 4) return 'Blocked';
+  if (sc < 40 || c.sentiment === 'Frustrated') return 'At Risk';
+  if (sc < 65 || (parseInt(c.blockers)||0) >= 2 || c.migration === 'Stalled') return 'Needs Attention';
+  return 'On Track';
+}
+
+function computePriority(c) {
+  var sc = computeScore(c);
+  var days = daysUntil(c.golive);
+  var bl = parseInt(c.blockers) || 0;
+  var sigs = analyseComms(c.comms || '');
+  var hasCritical = false;
+  for (var i = 0; i < sigs.length; i++) {
+    if (sigs[i].tag === 'Churn Risk' || sigs[i].tag === 'Escalation Risk') { hasCritical = true; break; }
+  }
+  if (hasCritical || sc < 35 || c.sentiment === 'Frustrated' || (days < 7 && bl > 0) || c.api === 'Blocked') return 'Urgent';
+  if (sc < 55 || bl >= 2 || days < 14) return 'High';
+  if (sc < 72) return 'Medium';
+  return 'Low';
+}
+
+function needsHuman(c) {
+  var sc = computeScore(c);
+  var days = daysUntil(c.golive);
+  var bl = parseInt(c.blockers) || 0;
+  var sigs = analyseComms(c.comms || '');
+  var reasons = [];
+  if (sc < 40) reasons.push('readiness score is critically low at ' + sc + '%');
+  if (c.sentiment === 'Frustrated') reasons.push('client sentiment is marked as frustrated');
+  if (days < 7 && bl > 0) reasons.push('go-live is in ' + days + ' days with ' + bl + ' open blocker' + (bl !== 1 ? 's' : ''));
+  if (c.arr >= 100000 && ['At Risk','Blocked','Needs Attention'].indexOf(computeStatus(c)) !== -1) reasons.push('high-value account (GBP ' + c.arr.toLocaleString() + ' ARR) with active delivery risk');
+  if (c.api === 'Blocked') reasons.push('API integration is blocked on the critical path');
+  for (var i = 0; i < sigs.length; i++) {
+    if (sigs[i].tag === 'Churn Risk') { reasons.push('churn risk language detected in customer communications'); break; }
+  }
+  for (var i = 0; i < sigs.length; i++) {
+    if (sigs[i].tag === 'Escalation Risk') { reasons.push('escalation language detected in recent communications'); break; }
+  }
+  return reasons;
+}
+
+function generateRisks(c) {
+  var risks = [];
+  var days = daysUntil(c.golive);
+  var bl = parseInt(c.blockers) || 0;
+  var tr = parseInt(c.training) || 0;
+  var sc = computeScore(c);
+  var sigs = analyseComms(c.comms || '');
+  var sigTags = sigs.map(function(s){return s.tag;});
+
+  if (days < 7 && days >= 0 && (bl > 0 || c.migration !== 'Completed' || c.api !== 'Completed') && c.stage !== 'Hypercare') {
+    var items = [];
+    if (bl > 0) items.push(bl + ' blocker' + (bl > 1 ? 's' : '') + ' remain open');
+    if (c.migration !== 'Completed') items.push('data migration is not complete');
+    if (c.api !== 'Completed' && c.integration !== 'None') items.push('API integration is not finalised');
+    risks.push({level:'high',title:'Go-live critically close with outstanding items',text:'Go-live is in ' + days + ' day' + (days !== 1 ? 's' : '') + ' and ' + items.join(', ') + '. At the current trajectory the go-live date is at serious risk. Missing this date will delay the customer\'s time-to-value and may create commercial tension given the GBP ' + c.arr.toLocaleString() + ' contract.'});
+  }
+  if (c.migration === 'Stalled') {
+    risks.push({level:'high',title:'Data migration stalled — critical path blocked',text:'Data migration has entered a stalled state. With go-live in ' + days + ' days and training at only ' + tr + '%, delivery risk is compounding. If not unblocked within 48 hours the go-live date will almost certainly be missed. ' + c.impl + ' must make this the immediate top priority.'});
+  }
+  if (c.api === 'Blocked') {
+    var hasBlockerSig = sigTags.indexOf('Dependency Blocker') !== -1;
+    risks.push({level:'high',title:'API integration blocked — no workaround available',text:'API integration is marked as blocked' + (hasBlockerSig ? ' and customer communications confirm a named dependency, likely credentials or security sign-off pending from the client\'s internal team' : '') + '. This is on the critical path to go-live. ' + c.impl + ' should escalate to the client\'s technical lead immediately.'});
+  }
+  if (tr < 50 && ['Contract Signed','Introduction Email Sent','Kickoff Call'].indexOf(c.stage) === -1) {
+    risks.push({level:'high',title:'Training at ' + tr + '% — insufficient for go-live',text:'Training completion stands at ' + tr + '%, below the minimum threshold for a customer at the ' + c.stage + ' stage. Users who have not completed training will not operate the platform effectively at go-live, increasing support load and reducing adoption.' + (days < 21 ? ' With go-live in ' + days + ' days this is now a schedule-critical risk.' : '')});
+  }
+  if (c.sentiment === 'Frustrated') {
+    risks.push({level:'high',title:'Client sentiment: frustrated — churn risk elevated',text:'Client sentiment is marked as Frustrated.' + (sigTags.indexOf('Frustration') !== -1 ? ' This is confirmed by customer communications which contain explicit frustration language.' : '') + ' Frustrated clients at the ' + c.stage + ' stage have elevated churn risk. Automated outreach is not appropriate — ' + c.csm + ' must engage directly.'});
+  }
+  if (sigTags.indexOf('Churn Risk') !== -1) {
+    risks.push({level:'high',title:'Churn risk language in customer communications',text:'Recent communications contain language associated with potential intent to exit or reconsider the relationship. ' + c.csm + ' and CS leadership should align on a recovery plan before any further outreach is made to the client.'});
+  }
+  if (sigTags.indexOf('Escalation Risk') !== -1 && sigTags.indexOf('Churn Risk') === -1) {
+    risks.push({level:'high',title:'Escalation threat detected in communications',text:'Customer communications suggest the client may involve senior stakeholders or request contract review. Proactive executive engagement from LightWork AI is recommended. Prepare a clear status update and recovery commitment before responding.'});
+  }
+  if (sigTags.indexOf('Delay Signal') !== -1 && risks.filter(function(r){return r.title.indexOf('stalled') !== -1;}).length === 0) {
+    risks.push({level:'med',title:'Customer signalling potential timeline delay',text:'Communications include language suggesting the current delivery schedule may be at risk from the client\'s side. This could reflect internal resourcing gaps, missing data, or pending approvals. ' + c.csm + ' should investigate and assess whether a formal timeline revision is required.'});
+  }
+  if (bl >= 3) {
+    risks.push({level:'high',title:bl + ' open blockers — coordinated dependency failure',text:'There are ' + bl + ' open blockers on this account. Multiple simultaneous blockers typically indicate a systemic dependency problem rather than isolated issues. A consolidated unblocking session with ' + c.csm + ', ' + c.impl + ', and the client project lead is recommended within 48 hours.'});
+  }
+  if (c.arr >= 100000 && ['On Track','In Hypercare','Ready for Go-Live'].indexOf(computeStatus(c)) === -1) {
+    risks.push({level:'med',title:'High-value account with active delivery concerns',text:'At GBP ' + c.arr.toLocaleString() + ' ARR, ' + c.name + ' is a strategically important account. Onboarding delays carry disproportionate commercial risk including renewal uncertainty and reputational impact. CS leadership should have visibility on this account.'});
+  }
+  if (sigTags.indexOf('Stakeholder Gap') !== -1) {
+    risks.push({level:'med',title:'Client-side stakeholder gap identified',text:'Communications indicate that a key coordinator or decision-maker may be unavailable or disengaged. Confirm who is the active point of contact and whether an escalation path exists if decisions are needed urgently.'});
+  }
+  return risks;
+}
+
+function generateActions(c) {
+  var acts = [];
+  var days = daysUntil(c.golive);
+  var bl = parseInt(c.blockers) || 0;
+  var tr = parseInt(c.training) || 0;
+  var sigs = analyseComms(c.comms || '');
+  var sigTags = sigs.map(function(s){return s.tag;});
+  var status = computeStatus(c);
+  var priority = computePriority(c);
+
+  if (c.sentiment === 'Frustrated' || sigTags.indexOf('Churn Risk') !== -1 || sigTags.indexOf('Escalation Risk') !== -1) {
+    acts.push({text:c.csm + ' to call ' + c.name + '\'s project sponsor directly within 24 hours, not by email. Come prepared with a specific recovery plan addressing each open item. Provide concrete commitments with named owners and dates. Do not use automated or templated communication.',owner:c.csm,priority:'Urgent',timeline:'Within 24 hours'});
+  }
+  if (c.api === 'Blocked') {
+    acts.push({text:c.impl + ' to identify the exact API block and escalate to ' + c.name + '\'s IT or InfoSec team with a named contact and hard deadline. If no response within 24 hours escalate to the client project sponsor and copy ' + c.csm + '.',owner:c.impl,priority:'Urgent',timeline:'Within 24 hours'});
+  }
+  if (c.migration === 'Stalled' || c.migration === 'Blocked') {
+    acts.push({text:c.impl + ' to schedule a data migration recovery session with ' + c.name + '\'s operations lead within 48 hours. Identify exactly which files or approvals are outstanding and set a hard delivery deadline of 2 business days.',owner:c.impl,priority:'High',timeline:'Within 48 hours'});
+  }
+  if (tr < 50 && ['Contract Signed','Introduction Email Sent','Kickoff Call'].indexOf(c.stage) === -1) {
+    acts.push({text:c.csm + ' to send ' + c.name + ' a structured training plan with specific session dates for all remaining user groups. Prioritise administrators and power users. Target ' + Math.min(tr + 30, 80) + '% completion within one week.',owner:c.csm,priority:tr < 30 ? 'Urgent' : 'High',timeline:days < 14 ? 'This week' : 'Within 5 business days'});
+  }
+  if (days < 14 && days > 0 && status !== 'In Hypercare' && status !== 'Ready for Go-Live') {
+    acts.push({text:c.csm + ' to send ' + c.name + ' a formal go-live readiness checklist. Request written confirmation from the client project lead that they are ready to proceed or surface any remaining blockers. Confirmation needed at least 5 days before the scheduled go-live date.',owner:c.csm,priority:'High',timeline:'Within ' + Math.min(days - 3, 4) + ' days'});
+  }
+  if (bl > 0 && acts.filter(function(a){return a.text.indexOf('blocker') !== -1;}).length === 0) {
+    acts.push({text:c.csm + ' and ' + c.impl + ' to run a joint blocker triage within 48 hours. For each of the ' + bl + ' open blocker' + (bl > 1 ? 's' : '') + ', assign a named owner, resolution deadline, and escalation path.',owner:c.csm,priority:'High',timeline:'Within 48 hours'});
+  }
+  if (status === 'Ready for Go-Live') {
+    acts.push({text:c.csm + ' to confirm the go-live deployment window with ' + c.name + '\'s operations team. Share platform admin credentials, support contacts, and the hypercare schedule. Book the first-week check-in call.',owner:c.csm,priority:'Medium',timeline:'Within 2 days'});
+  }
+  if (c.arr >= 100000 && priority !== 'Low') {
+    acts.push({text:'CS Lead to add ' + c.name + ' to the weekly leadership status update given the GBP ' + c.arr.toLocaleString() + ' ARR and current ' + status.toLowerCase() + ' classification.',owner:'CS Lead',priority:'Medium',timeline:'This week'});
+  }
+  return acts.slice(0, 5);
+}
+
+function generateEmail(c) {
+  var days = daysUntil(c.golive);
+  var status = computeStatus(c);
+  var bl = parseInt(c.blockers) || 0;
+  var tr = parseInt(c.training) || 0;
+  var sigs = analyseComms(c.comms || '');
+  var sigTags = sigs.map(function(s){return s.tag;});
+  var glDate = c.golive ? new Date(c.golive).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}) : 'your scheduled date';
+  var subject, body;
+
+  if (status === 'In Hypercare') {
+    subject = 'Welcome to Hypercare - ' + c.name + ' x LightWork AI';
+    body = 'Hi [Client Lead],\n\nCongratulations - you are officially live on LightWork AI!\n\nI wanted to reach out on day one of your hypercare period. Your team has put in a tremendous amount of work to get here and training is at ' + tr + '% - a strong foundation for a successful launch.\n\nFor the next 30 days I will be checking in weekly to monitor your metrics and address any issues quickly. I will send a calendar invite for your week one check-in shortly.\n\nPlease do not hesitate to reach out at any point.\n\nWarm regards,\n' + c.csm + '\nCustomer Success Manager, LightWork AI';
+  } else if (status === 'Ready for Go-Live') {
+    subject = 'Go-Live Confirmation - ' + c.name + ' x LightWork AI';
+    body = 'Hi [Client Lead],\n\nGreat news - your LightWork AI onboarding is complete and you are cleared for go-live.\n\nAll configuration stages are complete, data migration is finalised, API integration is live, and training is at ' + tr + '%. Your platform will be activated on ' + glDate + '.\n\n' + c.csm + ' will be your dedicated contact during the 30-day hypercare period that follows activation.\n\nVery best,\n' + c.csm + '\nCustomer Success Manager, LightWork AI';
+  } else if (sigTags.indexOf('Churn Risk') !== -1 || sigTags.indexOf('Escalation Risk') !== -1 || c.sentiment === 'Frustrated') {
+    subject = 'A personal note from your CSM - ' + c.name;
+    body = 'Hi [Client Lead],\n\nI wanted to reach out to you directly - not with a standard update, but with a genuine acknowledgement that your onboarding has been more difficult than it should have been.\n\nI have reviewed your recent messages carefully and I want to be transparent about where things stand:\n\n' +
+      (c.migration === 'Stalled' || c.migration === 'Blocked' ? '- Data migration: ' + c.migration.toLowerCase() + ' - ' + c.impl + ' is personally prioritising this and will confirm a recovery timeline shortly\n' : '') +
+      (c.api === 'Blocked' ? '- API integration: currently blocked - we are escalating this to your IT team as a priority and will update you within 24 hours\n' : '') +
+      (tr < 50 ? '- Training: at ' + tr + '% - I would like to schedule a focused session with your team this week\n' : '') +
+      (bl > 0 ? '- ' + bl + ' open blocker' + (bl > 1 ? 's' : '') + ' are being reviewed personally by me and ' + c.impl + '\n' : '') +
+      '\nYour go-live date of ' + glDate + ' remains my priority. I would like to propose a 30-minute call this week to walk you through our recovery plan and provide direct commitments.\n\nWould [day/time] work for you?\n\nKind regards,\n' + c.csm + '\nCustomer Success Manager, LightWork AI';
+  } else if (status === 'Needs Attention' || c.migration === 'Stalled' || sigTags.indexOf('Delay Signal') !== -1) {
+    subject = 'Onboarding update and action items - ' + c.name;
+    body = 'Hi [Client Lead],\n\nI wanted to check in ahead of your go-live on ' + glDate + ' - that is ' + days + ' days from now.\n\nCurrent stage: ' + c.stage + '\nTraining completion: ' + tr + '%\nOpen blockers: ' + bl + '\nMigration status: ' + c.migration + '\n\nTo keep your go-live date on track we need the following from your team:\n' +
+      (c.migration === 'Stalled' || c.migration === 'In Progress' ? '- Outstanding data migration files - can you confirm delivery by [date]?\n' : '') +
+      (c.api === 'In Progress' || c.api === 'Stalled' ? '- API credentials or technical contact to progress the integration\n' : '') +
+      (tr < 70 ? '- Training sessions for remaining users - currently at ' + tr + '%, target is 80% before go-live\n' : '') +
+      '\nIf there are any blockers on your side please let us know as soon as possible.\n\nBest,\n' + c.csm + '\nCustomer Success Manager, LightWork AI';
+  } else {
+    subject = 'Onboarding progress update - ' + c.name + ' x LightWork AI';
+    body = 'Hi [Client Lead],\n\nHope you are well. Just a quick update - your LightWork AI onboarding is progressing well.\n\nCurrent stage: ' + c.stage + '\nTraining completion: ' + tr + '%\nTarget go-live: ' + glDate + (days < 30 ? ' (' + days + ' days away)' : '') + '\n\n' +
+      (days < 21 ? 'As we approach go-live the key milestones coming up are: completing training for all remaining users, a final readiness review call with ' + c.csm + ', and go-live confirmation. I will be in touch with the detailed schedule shortly.\n\n' : 'Our next milestone is completing the ' + c.stage + ' phase. ' + c.impl + ' will be in touch with the next requirements shortly.\n\n') +
+      'Please do not hesitate to reach out if you have any questions.\n\nBest,\n' + c.csm + '\nCustomer Success Manager, LightWork AI';
+  }
+  return {subject:subject, body:body};
+}
+
+function scoreColor(s) { return s >= 70 ? '#22c55e' : s >= 50 ? '#f59e0b' : '#ef4444'; }
+function statusBadge(s) { return {'On Track':'bg','Needs Attention':'ba','At Risk':'br','Blocked':'br','Ready for Go-Live':'bb','In Hypercare':'bp','Complete':'bg'}[s] || 'bgr'; }
+function priorityBadge(p) { return {Urgent:'br',High:'ba',Medium:'bb',Low:'bg'}[p] || 'bgr'; }
+function sentBadge(s) { return {Positive:'bg',Frustrated:'br',Concerned:'ba',Neutral:'bgr'}[s] || 'bgr'; }
+
+function renderDashboard() {
+  var total = customers.length;
+  var onT = customers.filter(function(c){return computeStatus(c)==='On Track';}).length;
+  var needsA = customers.filter(function(c){return computeStatus(c)==='Needs Attention';}).length;
+  var atR = customers.filter(function(c){return computeStatus(c)==='At Risk'||computeStatus(c)==='Blocked';}).length;
+  var rGL = customers.filter(function(c){return computeStatus(c)==='Ready for Go-Live';}).length;
+  var avg = Math.round(customers.reduce(function(a,c){return a+computeScore(c);},0)/customers.length);
+
+  document.getElementById('metricsGrid').innerHTML =
+    '<div class="mcard"><div class="mlabel">Total Onboarding</div><div class="mvalue">' + total + '</div></div>' +
+    '<div class="mcard"><div class="mlabel">On Track</div><div class="mvalue" style="color:#22c55e">' + onT + '</div></div>' +
+    '<div class="mcard"><div class="mlabel">Needs Attention</div><div class="mvalue" style="color:#f59e0b">' + needsA + '</div></div>' +
+    '<div class="mcard"><div class="mlabel">At Risk / Blocked</div><div class="mvalue" style="color:#ef4444">' + atR + '</div></div>' +
+    '<div class="mcard"><div class="mlabel">Ready for Go-Live</div><div class="mvalue" style="color:#3b82f6">' + rGL + '</div></div>' +
+    '<div class="mcard"><div class="mlabel">Avg Readiness</div><div class="mvalue">' + avg + '<span style="font-size:13px;font-weight:400">%</span></div></div>';
+
+  var pOrd = ['Urgent','High','Medium','Low'];
+  var sorted = customers.slice().sort(function(a,b){ return pOrd.indexOf(computePriority(a)) - pOrd.indexOf(computePriority(b)); });
+
+  var rows = '';
+  for (var i = 0; i < sorted.length; i++) {
+    var c = sorted[i];
+    var sc = computeScore(c);
+    var st = computeStatus(c);
+    var pr = computePriority(c);
+    var days = daysUntil(c.golive);
+    var dStr = formatGoLive(c, true);
+    var sigs = analyseComms(c.comms || '');
+    var hasFlag = false;
+    for (var j = 0; j < sigs.length; j++) { if (sigs[j].tag === 'Churn Risk' || sigs[j].tag === 'Escalation Risk') { hasFlag = true; break; } }
+    rows += '<div class="crow">' +
+      '<div><div class="cname" onclick="viewCustomer(' + c.id + ')" style="cursor:pointer;text-decoration:underline;text-decoration-color:#e2e8f0">' + c.name + (hasFlag ? ' <span style="color:#ef4444;font-size:11px">[!]</span>' : '') + '</div><div class="csub">' + c.segment + ' &middot; GBP ' + (c.arr/1000).toFixed(0) + 'k ARR</div></div>' +
+      '<div style="font-size:12px;color:#64748b">' + c.stage + '</div>' +
+      '<div><span class="badge ' + statusBadge(st) + '">' + st + '</span></div>' +
+      '<div style="display:flex;align-items:center;gap:8px"><div class="sbar"><div class="sfill" style="width:' + sc + '%;background:' + scoreColor(sc) + '"></div></div><span style="font-size:12px;font-weight:600">' + sc + '%</span></div>' +
+      '<div><span class="badge ' + priorityBadge(pr) + '">' + pr + '</span></div>' +
+      '<div><span class="badge ' + sentBadge(c.sentiment) + '">' + c.sentiment + '</span></div>' +
+      '<div style="font-size:12px;' + (days >= 0 && days < 7 && c.stage !== 'Hypercare' ? 'color:#ef4444;font-weight:600' : 'color:#64748b') + '">' + dStr + '</div>' +
+      '<div><button onclick="loadCustomerIntoForm(' + c.id + ')" style="background:#f1f5f9;border:1px solid #e2e8f0;color:#0f172a;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap">Update</button></div>' +
+      '</div>';
+  }
+  document.getElementById('clientRows').innerHTML = rows;
+
+  var urgent = sorted.filter(function(c){return computePriority(c)==='Urgent';});
+  var nearGL = sorted.filter(function(c){return daysUntil(c.golive)<14 && c.stage!=='Hypercare' && computePriority(c)!=='Urgent';});
+  var readyItems = sorted.filter(function(c){return computeStatus(c)==='Ready for Go-Live';});
+  var items = [];
+  for (var i = 0; i < urgent.length; i++) {
+    var c = urgent[i];
+    var sigs = analyseComms(c.comms || '');
+    var flagMsg = '';
+    for (var j = 0; j < sigs.length; j++) { if (['Churn Risk','Escalation Risk','Frustration'].indexOf(sigs[j].tag) !== -1) { flagMsg = sigs[j].tag + ' detected in communications'; break; } }
+    if (!flagMsg) { flagMsg = c.api === 'Blocked' ? 'API integration blocked' : c.migration === 'Stalled' ? 'migration stalled' : c.sentiment === 'Frustrated' ? 'frustrated client' : 'immediate attention required'; }
+    items.push({dot:'bdot-red', text:'<strong>' + c.name + '</strong> is ' + computeStatus(c).toLowerCase() + '. ' + flagMsg + '. Assigned to ' + c.csm + '.'});
+  }
+  for (var i = 0; i < readyItems.length; i++) {
+    items.push({dot:'bdot-green', text:'<strong>' + readyItems[i].name + '</strong> has completed onboarding and is ready for go-live approval. ' + readyItems[i].csm + ' to confirm deployment window.'});
+  }
+  for (var i = 0; i < Math.min(nearGL.length, 2); i++) {
+    items.push({dot:'bdot-amber', text:'<strong>' + nearGL[i].name + '</strong> goes live in ' + daysUntil(nearGL[i].golive) + ' days with readiness score ' + computeScore(nearGL[i]) + '%. Review outstanding items with ' + nearGL[i].csm + '.'});
+  }
+  if (!items.length) items.push({dot:'bdot-green', text:'Portfolio is in good health. No urgent interventions required today.'});
+
+  var briefHTML = '<div class="briefing-label">AI Daily Briefing &middot; ' + new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'}) + '</div>' +
+    '<div class="briefing-title">Good morning. Here is where your team needs to focus today.</div>' +
+    '<div class="briefing-list">';
+  for (var i = 0; i < items.length; i++) {
+    briefHTML += '<div class="briefing-row"><div class="bdot ' + items[i].dot + '"></div><div>' + items[i].text + '</div></div>';
+  }
+  briefHTML += '</div>';
+  document.getElementById('briefingPanel').innerHTML = briefHTML;
+}
+
+function viewCustomer(id) {
+  var c = null;
+  for (var i = 0; i < customers.length; i++) { if (customers[i].id === id) { c = customers[i]; break; } }
+  if (!c) return;
+  showSection('c360');
+  renderC360(c);
+}
+
+function renderC360(c) {
+  try {
+    c = normalizeCustomerWorkflow(c);
+    var sc = computeScore(c);
+    var st = computeStatus(c);
+    var pr = computePriority(c);
+    var risks = generateRisks(c);
+    var actions = generateActions(c);
+    var email = generateEmail(c);
+    var humanR = needsHuman(c);
+    var days = daysUntil(c.golive);
+    var sigs = analyseComms(c.comms || '');
+    var sigTags = sigs.map(function(s){return s.tag;});
+    var initials = c.name.split(' ').slice(0,2).map(function(w){return w[0];}).join('');
+    var circ = 2 * Math.PI * 36;
+    var offset = circ - (sc / 100) * circ;
+    var rc = scoreColor(sc);
+
+    var html = '<div class="c360hdr">' +
+      '<div class="avatar">' + initials + '</div>' +
+      '<div style="flex:1">' +
+        '<div class="c360name">' + c.name + '</div>' +
+        '<div class="c360sub">' + c.segment + ' &middot; ' + c.csm + ' (CSM) &middot; ' + c.impl + ' (Impl) &middot; GBP ' + c.arr.toLocaleString() + ' ARR</div>' +
+        '<div class="c360tags">' +
+          '<span class="badge ' + statusBadge(st) + '">' + st + '</span>' +
+          '<span class="badge ' + priorityBadge(pr) + '">' + pr + ' Priority</span>' +
+          '<span class="badge ' + sentBadge(c.sentiment) + '">' + c.sentiment + '</span>' +
+          (c.golive ? '<span class="badge bgr">' + formatGoLive(c, false) + '</span>' : '') +
+        '</div>' +
+      '</div>' +
+      '<div class="c360stats">' +
+        '<div><svg width="88" height="88" viewBox="0 0 90 90">' +
+          '<circle cx="45" cy="45" r="36" fill="none" stroke="#e2e8f0" stroke-width="8"/>' +
+          '<circle cx="45" cy="45" r="36" fill="none" stroke="' + rc + '" stroke-width="8" stroke-dasharray="' + circ.toFixed(1) + '" stroke-dashoffset="' + offset.toFixed(1) + '" stroke-linecap="round" transform="rotate(-90 45 45)"/>' +
+          '<text x="45" y="42" text-anchor="middle" font-size="16" font-weight="700" fill="#0f172a">' + sc + '%</text>' +
+          '<text x="45" y="56" text-anchor="middle" font-size="10" fill="#64748b">Ready</text>' +
+        '</svg></div>' +
+        '<div class="cstat" style="padding-top:18px"><div class="cstatv">' + (c.blockers || 0) + '</div><div class="cstatl">Blockers</div></div>' +
+        '<div class="cstat" style="padding-top:18px"><div class="cstatv">' + (c.training || 0) + '%</div><div class="cstatl">Trained</div></div>' +
+      '</div>' +
+    '</div>';
+
+    if (humanR.length) {
+      html += '<div class="hwarn"><div style="font-size:20px">(!)</div><div><div class="hwtitle">Human intervention required - do not send automated communications without CSM review</div><div class="hwtext">This account requires direct CSM engagement because: ' + humanR.join('; ') + '.</div></div></div>';
+    }
+
+    html += '<div class="tabs">' +
+      '<button class="tbtn active" onclick="c360Tab(this,\'overview\')">Overview</button>' +
+      '<button class="tbtn" onclick="c360Tab(this,\'comms\')">Comms Analysis' + (sigs.length ? ' (' + sigs.length + ')' : '') + '</button>' +
+      '<button class="tbtn" onclick="c360Tab(this,\'ai\')">Risks and Actions</button>' +
+      '<button class="tbtn" onclick="c360Tab(this,\'email\')">Follow-up Email</button>' +
+      '<button class="tbtn" onclick="c360Tab(this,\'escalation\')">Escalation Note</button>' +
+    '</div>';
+
+    // OVERVIEW
+    var tlHTML = '';
+    for (var i = 0; i < STAGES.length; i++) {
+      var ss = (c.stageStatuses && c.stageStatuses[i]) ? c.stageStatuses[i] : (STAGES.indexOf(c.stage) > i ? 'Completed' : STAGES.indexOf(c.stage) === i ? 'Ongoing' : 'Not Started');
+      var isCur = c.stage === STAGES[i];
+      var dc = ss === 'Completed' ? 'tl-done' : ss === 'Ongoing' ? 'tl-active' : ss === 'Stalled' ? 'tl-stalled' : ss === 'Blocked' ? 'tl-blocked' : 'tl-pending';
+      var ic = ss === 'Completed' ? 'OK' : ss === 'Ongoing' ? '&gt;' : ss === 'Stalled' ? '||' : ss === 'Blocked' ? 'X' : '-';
+      tlHTML += '<div class="tlrow"><div class="tldot ' + dc + '">' + ic + '</div><div class="tlline"></div><div class="tlcontent"><div class="tlstage"' + (isCur ? ' style="font-weight:700"' : '') + '>' + STAGES[i] + '</div><div class="tlstatus">' + ss + (isCur ? ' - Current' : '') + '</div></div></div>';
+    }
+
+    var readExpl = buildReadinessExpl(c, sc);
+
+    var detailsHTML = '<table style="width:100%;border-collapse:collapse">' +
+      '<tr class="dtrow"><td class="dtkey">Integration</td><td class="dtval">' + c.integration + '</td></tr>' +
+      '<tr class="dtrow"><td class="dtkey">Migration</td><td><span class="badge ' + (c.migration==='Completed'?'bg':c.migration==='Blocked'?'br':c.migration==='Stalled'?'ba':'bgr') + '">' + c.migration + '</span></td></tr>' +
+      '<tr class="dtrow"><td class="dtkey">API Status</td><td><span class="badge ' + (c.api==='Completed'?'bg':c.api==='Blocked'?'br':c.api==='Stalled'?'ba':'bgr') + '">' + c.api + '</span></td></tr>' +
+      '<tr class="dtrow"><td class="dtkey">Contract Signed</td><td class="dtval">' + new Date(c.signed).toLocaleDateString('en-GB') + '</td></tr>' +
+      '<tr class="dtrow"><td class="dtkey">Target Go-Live</td><td class="dtval"' + (days >= 0 && days < 7 ? ' style="color:#ef4444;font-weight:700"' : '') + '>' + (c.golive ? new Date(c.golive).toLocaleDateString('en-GB') : 'TBC') + '</td></tr>' +
+    '</table>' +
+    (c.client_notes ? '<div style="margin-top:12px;padding-top:12px;border-top:1px solid #e2e8f0"><div style="font-size:10px;font-weight:700;color:#64748b;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.4px">Client Notes</div><div style="font-size:12px;color:#64748b;line-height:1.5">' + c.client_notes + '</div></div>' : '') +
+    (c.internal_notes ? '<div style="margin-top:10px;padding-top:10px;border-top:1px solid #e2e8f0"><div style="font-size:10px;font-weight:700;color:#64748b;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.4px">Internal Notes</div><div style="font-size:12px;color:#64748b;line-height:1.5">' + c.internal_notes + '</div></div>' : '');
+
+    html += '<div id="c360-overview">' +
+      '<div class="twocol">' +
+        '<div class="icard"><div class="icardtitle">Onboarding Timeline</div><div class="tline">' + tlHTML + '</div></div>' +
+        '<div>' +
+          '<div class="icard" style="margin-bottom:12px"><div class="icardtitle">Readiness Explanation</div><div style="font-size:13px;line-height:1.6;color:#475569">' + readExpl + '</div></div>' +
+          '<div class="icard"><div class="icardtitle">Key Details</div>' + detailsHTML + '</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+
+    // COMMS
+    var commsHTML = '<div id="c360-comms" style="display:none"><div class="icard"><div class="icardtitle">Communication Signal Analysis</div>';
+    if (c.comms) commsHTML += '<div style="background:#f8fafc;border-radius:8px;padding:12px 14px;margin-bottom:14px;font-size:12px;line-height:1.6;color:#64748b;font-style:italic;border:1px solid #e2e8f0">' + c.comms + '</div>';
+    if (sigs.length) {
+      commsHTML += '<div style="background:#f8fafc;border-radius:8px;padding:14px 16px">';
+      for (var i = 0; i < sigs.length; i++) {
+        commsHTML += '<div class="csig"><span class="stag ' + sigs[i].cls + '">' + sigs[i].tag + '</span><span style="color:#475569">' + sigs[i].msg + '</span></div>';
+      }
+      commsHTML += '</div>';
+    } else {
+      commsHTML += '<div style="color:#64748b;font-size:13px;padding:12px 0">No significant risk signals detected. ' + (c.comms ? 'The language appears neutral or positive.' : 'No customer communication recorded.') + '</div>';
+    }
+    if (sigTags.indexOf('Churn Risk') !== -1 || sigTags.indexOf('Escalation Risk') !== -1 || sigTags.indexOf('Frustration') !== -1) {
+      commsHTML += '<div class="hwarn" style="margin-top:14px;margin-bottom:0"><div style="font-size:16px">(!)</div><div><div class="hwtitle" style="font-size:12px">Automated response not recommended</div><div class="hwtext" style="font-size:12px">High-risk signals detected. CSM should review and personalise all outreach before sending.</div></div></div>';
+    }
+    commsHTML += '</div></div>';
+    html += commsHTML;
+
+    // RISKS AND ACTIONS
+    var aiHTML = '<div id="c360-ai" style="display:none"><div class="icard" style="margin-bottom:12px"><div class="icardtitle">Risk Detection</div>';
+    if (risks.length) {
+      for (var i = 0; i < risks.length; i++) {
+        var r = risks[i];
+        aiHTML += '<div class="riskrow"><div class="riskicon ' + (r.level==='high'?'risk-h':r.level==='med'?'risk-m':'risk-l') + '">' + (r.level==='high'?'!':r.level==='med'?'^':'i') + '</div><div><div style="font-size:12px;font-weight:700;margin-bottom:3px">' + r.title + '</div><div style="font-size:12px;line-height:1.6;color:#475569">' + r.text + '</div></div></div>';
+      }
+    } else {
+      aiHTML += '<div style="color:#64748b;font-size:13px;padding:8px 0">No significant risks detected. This account is progressing well.</div>';
+    }
+    aiHTML += '</div><div class="icard"><div class="icardtitle">Recommended Next Actions</div>';
+    if (actions.length) {
+      aiHTML += '<div style="display:grid;grid-template-columns:1fr 80px 70px 100px;gap:10px;padding-bottom:8px;border-bottom:1px solid #e2e8f0;margin-bottom:4px">' +
+        '<div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.4px">Action</div>' +
+        '<div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.4px">Owner</div>' +
+        '<div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.4px">Priority</div>' +
+        '<div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.4px">Timeline</div>' +
+      '</div>';
+      for (var i = 0; i < actions.length; i++) {
+        var a = actions[i];
+        aiHTML += '<div class="actrow">' +
+          '<div><span style="font-size:10px;font-weight:700;color:#94a3b8">' + (i+1) + '. </span><span style="font-size:12px;line-height:1.6;color:#0f172a">' + a.text + '</span></div>' +
+          '<div><span class="actowner">' + a.owner.split(' ')[0] + '</span></div>' +
+          '<div><span class="badge ' + priorityBadge(a.priority) + '" style="font-size:10px">' + a.priority + '</span></div>' +
+          '<div style="font-size:11px;color:#64748b;line-height:1.4">' + a.timeline + '</div>' +
+        '</div>';
+      }
+    } else {
+      aiHTML += '<div style="color:#64748b;font-size:13px;padding:8px 0">No urgent actions required.</div>';
+    }
+    aiHTML += '</div></div>';
+    html += aiHTML;
+
+    // EMAIL
+    html += '<div id="c360-email" style="display:none"><div class="icard"><div class="icardtitle">AI-Generated Follow-up Email</div>' +
+      (humanR.length ? '<div class="ibanner">(!) Review before sending - this account requires human oversight. Personalise before use.</div>' : '') +
+      '<div style="margin-bottom:12px;padding:10px 14px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;gap:12px">' +
+        '<div>' +
+          '<span style="font-size:11px;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:0.4px">Subject: </span>' +
+          '<span style="font-size:13px;font-weight:600;color:#0f172a">' + email.subject + '</span>' +
+        '</div>' +
+        '<button onclick="copyText(\'email-body-ta\',this)" style="background:#0f172a;color:#fff;border:none;padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0">Copy email</button>' +
+      '</div>' +
+      '<textarea id="email-body-ta" style="width:100%;min-height:320px;background:#f8fafc;border-radius:8px;padding:16px 20px;font-size:13px;line-height:1.8;font-family:\'DM Mono\',monospace;border:1px solid #e2e8f0;color:#0f172a;resize:vertical;outline:none">' + email.body + '</textarea>' +
+      '<div style="margin-top:8px;font-size:11px;color:#94a3b8">Edit directly above before sending. Generated based on ' + c.name + ' status, sentiment (' + c.sentiment + '), and communication signals.</div>' +
+    '</div></div>';
+
+    // ESCALATION
+    var escText = 'ESCALATION NOTE - ' + c.name.toUpperCase() + '\n\n' +
+      'CUSTOMER:        ' + c.name + '\n' +
+      'CURRENT STAGE:   ' + c.stage + '\n' +
+      'STATUS:          ' + st + '\n' +
+      'PRIORITY:        ' + pr + '\n' +
+      'MAIN BLOCKER:    ' + (risks[0] ? risks[0].title : (c.blockers || 0) + ' open blocker(s)') + '\n' +
+      'COMM SIGNALS:    ' + (sigTags.filter(function(t){return ['Churn Risk','Escalation Risk','Frustration','Delay Signal'].indexOf(t)!==-1;}).join(', ') || 'None detected') + '\n' +
+      'BUSINESS IMPACT: ' + (c.arr >= 100000 ? 'Strategic account GBP ' + c.arr.toLocaleString() + ' ARR. ' + (days < 14 ? 'Go-live in ' + days + ' days - delay risk is high.' : 'Delays may affect renewal confidence.') : 'Contract GBP ' + c.arr.toLocaleString() + '. ' + (days < 14 ? 'Go-live in ' + days + ' days.' : 'Delays may affect satisfaction.')) + '\n' +
+      'RECOMMENDED OWNER: ' + (pr === 'Urgent' ? c.csm + ' + CS Lead' : c.csm) + '\n' +
+      'NEXT STEP:       ' + (actions[0] ? actions[0].text.split('.')[0] + '.' : 'Review top priority risks and assign owners.') + '\n' +
+      'CSM:             ' + c.csm + '\n' +
+      'IMPL OWNER:      ' + c.impl + '\n' +
+      'DATE:            ' + new Date().toLocaleDateString('en-GB', {day:'numeric',month:'long',year:'numeric'});
+
+    html += '<div id="c360-escalation" style="display:none"><div class="icard">' +
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">' +
+        '<div class="icardtitle" style="margin-bottom:0">Internal Escalation Note</div>' +
+        '<button onclick="copyText(\'esc-body-ta\',this)" style="background:#0f172a;color:#fff;border:none;padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer">Copy note</button>' +
+      '</div>' +
+      '<div style="font-size:11px;color:#94a3b8;margin-bottom:10px">Edit if needed, then paste into Slack, Jira, Linear, or your ticketing system.</div>' +
+      '<textarea id="esc-body-ta" style="width:100%;min-height:300px;background:#0f172a;border-radius:8px;padding:16px 20px;font-size:12px;line-height:1.9;font-family:\'DM Mono\',monospace;color:#e2e8f0;border:1px solid #1e293b;resize:vertical;outline:none">' + escText + '</textarea>' +
+    '</div></div>';
+
+    document.getElementById('c360Content').innerHTML = html;
+  } catch(e) {
+    document.getElementById('c360Content').innerHTML = '<div class="hint">Error rendering customer profile. Please try again.</div>';
+    console.error('renderC360 error:', e);
+  }
+}
+
+function buildReadinessExpl(c, sc) {
+  c = normalizeCustomerWorkflow(c);
+  var tr = parseInt(c.training) || 0;
+  var bl = parseInt(c.blockers) || 0;
+  var completed = getCompletedStageCount(c);
+  var ss = cloneStageStatuses(c.stageStatuses);
+  var sigs = analyseComms(c.comms || '');
+  var sigTags = sigs.map(function(s){return s.tag;});
+  var pos = [], neg = [], next = [];
+
+  if (completed > 0) pos.push(completed + ' of ' + STAGES.length + ' onboarding stages completed');
+  if (c.migration === 'Completed') pos.push('data migration completed');
+  if (c.api === 'Completed') pos.push('API integration completed');
+  if (tr >= 80) pos.push('strong training completion at ' + tr + '%');
+  if (bl === 0) pos.push('no open blockers');
+  if (c.sentiment === 'Positive') pos.push('positive client sentiment');
+
+  for (var i = 0; i < STAGES.length; i++) {
+    if (ss[i] === 'Not Started' && i < 7) neg.push(STAGES[i] + ' not started');
+    if (ss[i] === 'Stalled') neg.push(STAGES[i] + ' stalled');
+    if (ss[i] === 'Blocked') neg.push(STAGES[i] + ' blocked');
+  }
+  if (tr < 50) neg.push('low training completion at ' + tr + '%');
+  else if (tr < 80) neg.push('training not yet at go-live threshold (' + tr + '%)');
+  if (bl > 0) neg.push(bl + ' open blocker' + (bl > 1 ? 's' : ''));
+  if (c.sentiment === 'Frustrated') neg.push('frustrated client sentiment');
+  if (sigTags.indexOf('Delay Signal') !== -1) neg.push('delay signals in communications');
+  if (sigTags.indexOf('Churn Risk') !== -1) neg.push('churn risk language in communications');
+
+  var currentIdx = STAGES.indexOf(c.stage);
+  if (currentIdx >= 0) {
+    if (c.stage === 'Pre-Go-Live Review') next.push('complete final readiness checks and confirm deployment window');
+    else if (c.stage === 'Go-Live') next.push('activate the customer and start hypercare');
+    else if (c.stage === 'Hypercare') next.push('monitor first-30-day adoption and support issues');
+    else next.push('complete ' + c.stage.toLowerCase() + ' and move the account to ' + (STAGES[currentIdx + 1] || 'completion'));
+  }
+
+  var t = 'Current readiness score: ' + sc + '%. ';
+  if (pos.length) t += 'Positive contributors: ' + pos.slice(0,4).join(', ') + '. ';
+  if (neg.length) t += 'Readiness is being reduced by: ' + neg.slice(0,5).join(', ') + '. ';
+  if (!neg.length && sc >= 80) t += 'There are no major readiness gaps visible from the current inputs. ';
+
+  if (sc >= 80) t += 'This customer is on track for go-live. Next focus: ' + (next[0] || 'prepare hypercare plan') + '.';
+  else if (sc >= 60) t += 'The customer is progressing, but remaining onboarding activities should be closed before go-live. Next focus: ' + (next[0] || 'complete outstanding milestones') + '.';
+  else if (sc >= 40) t += 'This account needs attention because several milestones remain incomplete. Next focus: ' + (next[0] || 'agree owners for outstanding gaps') + '.';
+  else t += 'This account is at significant onboarding risk. A recovery plan should be agreed with named owners and deadlines.';
+  return t;
+}
+
+function c360Tab(btn, tab) {
+  var allBtns = document.querySelectorAll('.tbtn');
+  for (var i = 0; i < allBtns.length; i++) allBtns[i].classList.remove('active');
+  btn.classList.add('active');
+  var tabs = ['overview','comms','ai','email','escalation'];
+  for (var i = 0; i < tabs.length; i++) {
+    var el = document.getElementById('c360-' + tabs[i]);
+    if (el) el.style.display = tabs[i] === tab ? 'block' : 'none';
+  }
+}
+
+function showSection(id) {
+  var sections = document.querySelectorAll('.section');
+  for (var i = 0; i < sections.length; i++) sections[i].classList.remove('active');
+  var navBtns = document.querySelectorAll('.nav-btn');
+  for (var i = 0; i < navBtns.length; i++) navBtns[i].classList.remove('active');
+  document.getElementById('section-' + id).classList.add('active');
+  var ids = ['dashboard','add','c360'];
+  for (var i = 0; i < ids.length; i++) { if (ids[i] === id) navBtns[i].classList.add('active'); }
+  if (id === 'dashboard') renderDashboard();
+}
+
+function processForm() {
+  var name = document.getElementById('f_name').value.trim();
+  if (!name) { alert('Please enter a customer name.'); return; }
+  var ss = {};
+  for (var i = 0; i < STAGES.length; i++) { ss[i] = document.getElementById('ss_' + i).value; }
+  var newC = {
+    id: customers.length + 1, name: name,
+    segment: document.getElementById('f_segment').value,
+    arr: parseInt(document.getElementById('f_arr').value) || 0,
+    signed: document.getElementById('f_signed').value || new Date().toISOString().slice(0,10),
+    golive: document.getElementById('f_golive').value || '',
+    csm: document.getElementById('f_csm').value || 'Unassigned',
+    impl: document.getElementById('f_impl').value || 'Unassigned',
+    stage: document.getElementById('f_stage').value,
+    sentiment: document.getElementById('f_sentiment').value,
+    integration: document.getElementById('f_integration').value,
+    migration: document.getElementById('f_migration').value,
+    api: document.getElementById('f_api').value,
+    training: parseInt(document.getElementById('f_training').value) || 0,
+    blockers: parseInt(document.getElementById('f_blockers').value) || 0,
+    comms: document.getElementById('f_comms').value,
+    client_notes: document.getElementById('f_client_notes').value,
+    internal_notes: document.getElementById('f_internal_notes').value,
+    stageStatuses: ss
+  };
+  newC = normalizeCustomerWorkflow(newC);
+  var ei = -1;
+  for (var i = 0; i < customers.length; i++) { if (customers[i].name.toLowerCase() === name.toLowerCase()) { ei = i; break; } }
+  if (ei >= 0) { newC.id = customers[ei].id; customers[ei] = newC; }
+  else { customers.push(newC); }
+  document.getElementById('formMsg').textContent = ei >= 0 ? name + ' updated' : name + ' added';
+  setTimeout(function(){ document.getElementById('formMsg').textContent = ''; }, 3000);
+  viewCustomer(newC.id);
+}
+
+// Build stage grid
+var sg = document.getElementById('stageGrid');
+for (var i = 0; i < STAGES.length; i++) {
+  var div = document.createElement('div');
+  div.className = 'sitem';
+  div.innerHTML = '<div class="sname">' + STAGES[i] + '</div><select class="finput" id="ss_' + i + '" style="font-size:12px;padding:5px 8px"><option>Not Started</option><option>Ongoing</option><option>Completed</option><option>Stalled</option><option>Blocked</option></select>';
+  sg.appendChild(div);
+}
+
+
+function syncFormWorkflow() {
+  var ss = {};
+  for (var i = 0; i < STAGES.length; i++) {
+    var el = document.getElementById('ss_' + i);
+    ss[i] = el ? el.value : 'Not Started';
+  }
+  var c = {
+    stage: document.getElementById('f_stage').value,
+    integration: document.getElementById('f_integration').value,
+    migration: document.getElementById('f_migration').value,
+    api: document.getElementById('f_api').value,
+    stageStatuses: ss
+  };
+  c = normalizeCustomerWorkflow(c);
+  setSelectValue('f_stage', c.stage === 'Onboarding Complete' ? 'Hypercare' : c.stage);
+  for (var j = 0; j < STAGES.length; j++) {
+    var sel = document.getElementById('ss_' + j);
+    if (sel) setSelectValue('ss_' + j, c.stageStatuses[j]);
+  }
+}
+
+['f_stage','f_migration','f_api','f_integration'].forEach(function(id) {
+  var el = document.getElementById(id);
+  if (el) el.addEventListener('change', syncFormWorkflow);
+});
+for (var si = 0; si < STAGES.length; si++) {
+  var stageEl = document.getElementById('ss_' + si);
+  if (stageEl) stageEl.addEventListener('change', syncFormWorkflow);
+}
+
+function clearForm() {
+  document.getElementById('formTitle').textContent = 'Add New Client';
+  document.getElementById('f_name').value = '';
+  document.getElementById('f_arr').value = '';
+  document.getElementById('f_signed').value = '';
+  document.getElementById('f_golive').value = '';
+  document.getElementById('f_csm').value = '';
+  document.getElementById('f_impl').value = '';
+  document.getElementById('f_comms').value = '';
+  document.getElementById('f_client_notes').value = '';
+  document.getElementById('f_internal_notes').value = '';
+  document.getElementById('f_training').value = '';
+  document.getElementById('f_blockers').value = '';
+  document.getElementById('f_segment').value = 'Enterprise';
+  document.getElementById('f_stage').value = 'Contract Signed';
+  document.getElementById('f_sentiment').value = 'Positive';
+  document.getElementById('f_integration').value = 'REST API';
+  document.getElementById('f_migration').value = 'Not Started';
+  document.getElementById('f_api').value = 'Not Started';
+  for (var i = 0; i < STAGES.length; i++) {
+    var el = document.getElementById('ss_' + i);
+    if (el) el.value = 'Not Started';
+  }
+  document.getElementById('formMsg').textContent = '';
+}
+
+function setSelectValue(id, val) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  for (var i = 0; i < el.options.length; i++) {
+    if (el.options[i].value === val || el.options[i].text === val) {
+      el.selectedIndex = i; return;
+    }
+  }
+}
+
+function loadCustomerIntoForm(id) {
+  var c = null;
+  for (var i = 0; i < customers.length; i++) { if (customers[i].id === id) { c = customers[i]; break; } }
+  if (!c) return;
+  c = normalizeCustomerWorkflow(c);
+  clearForm();
+  document.getElementById('formTitle').textContent = 'Update Client - ' + c.name;
+  document.getElementById('f_name').value = c.name;
+  document.getElementById('f_arr').value = c.arr || '';
+  document.getElementById('f_signed').value = c.signed || '';
+  document.getElementById('f_golive').value = c.golive || '';
+  document.getElementById('f_csm').value = c.csm || '';
+  document.getElementById('f_impl').value = c.impl || '';
+  document.getElementById('f_comms').value = c.comms || '';
+  document.getElementById('f_client_notes').value = c.client_notes || '';
+  document.getElementById('f_internal_notes').value = c.internal_notes || '';
+  document.getElementById('f_training').value = c.training || '';
+  document.getElementById('f_blockers').value = c.blockers || '';
+  setSelectValue('f_segment', c.segment);
+  setSelectValue('f_stage', c.stage);
+  setSelectValue('f_sentiment', c.sentiment);
+  setSelectValue('f_integration', c.integration);
+  setSelectValue('f_migration', c.migration);
+  setSelectValue('f_api', c.api);
+  if (c.stageStatuses) {
+    for (var i = 0; i < STAGES.length; i++) {
+      var el = document.getElementById('ss_' + i);
+      if (el && c.stageStatuses[i]) setSelectValue('ss_' + i, c.stageStatuses[i]);
+    }
+  }
+  showSection('add');
+  window.scrollTo(0, 0);
+  document.getElementById('formMsg').textContent = 'Editing ' + c.name + ' - make changes and save';
+}
+
+
+function copyText(id, btn) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.select();
+  try {
+    document.execCommand('copy');
+    var orig = btn.textContent;
+    btn.textContent = 'Copied!';
+    btn.style.background = '#166534';
+    setTimeout(function() { btn.textContent = orig; btn.style.background = '#0f172a'; }, 2000);
+  } catch(e) {
+    navigator.clipboard.writeText(el.value).then(function() {
+      var orig = btn.textContent;
+      btn.textContent = 'Copied!';
+      btn.style.background = '#166534';
+      setTimeout(function() { btn.textContent = orig; btn.style.background = '#0f172a'; }, 2000);
+    });
+  }
+}
+
+renderDashboard();
+</script>
+</body>
+</html>
